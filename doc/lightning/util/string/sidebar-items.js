@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["PrintableString","A string that displays only printable characters, replacing control characters with [`core::char::REPLACEMENT_CHARACTER`]."]]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":[["gossip","The top-level network map tracking logic lives here."],["router","The top-level routing/network map tracking logic lives here."],["scoring","Utilities for scoring payment channels."]]};

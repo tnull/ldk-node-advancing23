@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":[["GraphSyncError","All-encompassing standard error type that processing can return"]],"struct":[["RapidGossipSync","The main Rapid Gossip Sync object."]]};

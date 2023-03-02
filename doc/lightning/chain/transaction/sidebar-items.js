@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["OutPoint","A reference to a transaction output."]],"type":[["TransactionData","Transaction data where each item consists of a transaction reference paired with the index of the transaction within a block."]]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["Future","A simple future which can complete once, and calls some callback(s) when it does so."]],"trait":[["FutureCallback","A callback which is called when a [`Future`] completes."]]};

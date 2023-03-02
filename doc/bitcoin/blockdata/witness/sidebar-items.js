@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["Iter","Support structure to allow efficient and convenient iteration over the Witness elements"],["Witness","The Witness is the data used to unlock bitcoins since the segwit upgrade"]]};

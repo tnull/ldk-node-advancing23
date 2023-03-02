@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["BlockTxn","blocktxn message"],["CmpctBlock","cmpctblock message"],["GetBlockTxn","getblocktxn message"],["SendCmpct","sendcmpct message"]]};

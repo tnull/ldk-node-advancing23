@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"trait":[["Deserialize","A trait for deserializing a value from raw data in PSBT key-value pairs."],["Serialize","A trait for serializing a value as raw data for insertion into PSBT key-value pairs."]]};

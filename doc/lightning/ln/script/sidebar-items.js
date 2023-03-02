@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["InvalidShutdownScript","An error occurring when converting from [`Script`] to [`ShutdownScript`]."],["ShutdownScript","A script pubkey for shutting down a channel as defined by BOLT #2."]]};

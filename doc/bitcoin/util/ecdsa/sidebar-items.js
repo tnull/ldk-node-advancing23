@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":[["EcdsaSigError","A key-related error."]],"struct":[["EcdsaSig","An ECDSA signature with the corresponding hash type."]]};

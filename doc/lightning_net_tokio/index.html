@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A socket handling library for those running in Tokio environments who wish to use rust-lightning with native TcpStreams."><meta name="keywords" content="rust, rustlang, rust-lang, lightning_net_tokio"><title>lightning_net_tokio - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../normalize.css"><link rel="stylesheet" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../ayu.css" disabled><link rel="stylesheet" href="../dark.css" disabled><link rel="stylesheet" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script defer src="../crates.js"></script><script defer src="../main.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../lightning_net_tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../lightning_net_tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"><a href="#">Crate lightning_net_tokio</a></h2><div class="sidebar-elems"><div class="block"><ul><li class="version">Version 0.0.113</li><li><a id="all-types" href="all.html">All Items</a></li></ul></div><section><div class="block"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../lightning_net_tokio/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">lightning_net_tokio</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/lightning_net_tokio/lib.rs.html#10-803">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A socket handling library for those running in Tokio environments who wish to use
+rust-lightning with native TcpStreams.</p>
+<p>Designed to be as simple as possible, the high-level usage is almost as simple as “hand over a
+TcpStream and a reference to a PeerManager and the rest is handled”, except for the
+<a href="../lightning/util/events/enum.Event.html">Event</a> handling mechanism; see example below.</p>
+<p>The PeerHandler, due to the fire-and-forget nature of this logic, must be an Arc, and must use
+the SocketDescriptor provided here as the PeerHandler’s SocketDescriptor.</p>
+<p>Three methods are exposed to register a new connection for handling in tokio::spawn calls; see
+their individual docs for details.</p>
+<h2 id="example"><a href="#example">Example</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::net::TcpStream;
+<span class="kw">use </span>bitcoin::secp256k1::PublicKey;
+<span class="kw">use </span>lightning::util::events::{Event, EventHandler, EventsProvider};
+<span class="kw">use </span>std::net::SocketAddr;
+<span class="kw">use </span>std::sync::Arc;
+
+<span class="comment">// Define concrete types for our high-level objects:
+</span><span class="kw">type </span>TxBroadcaster = <span class="kw">dyn </span>lightning::chain::chaininterface::BroadcasterInterface + Send + Sync;
+<span class="kw">type </span>FeeEstimator = <span class="kw">dyn </span>lightning::chain::chaininterface::FeeEstimator + Send + Sync;
+<span class="kw">type </span>Logger = <span class="kw">dyn </span>lightning::util::logger::Logger + Send + Sync;
+<span class="kw">type </span>NodeSigner = <span class="kw">dyn </span>lightning::chain::keysinterface::NodeSigner + Send + Sync;
+<span class="kw">type </span>ChainAccess = <span class="kw">dyn </span>lightning::chain::Access + Send + Sync;
+<span class="kw">type </span>ChainFilter = <span class="kw">dyn </span>lightning::chain::Filter + Send + Sync;
+<span class="kw">type </span>DataPersister = <span class="kw">dyn </span>lightning::chain::chainmonitor::Persist&lt;lightning::chain::keysinterface::InMemorySigner&gt; + Send + Sync;
+<span class="kw">type </span>ChainMonitor = lightning::chain::chainmonitor::ChainMonitor&lt;lightning::chain::keysinterface::InMemorySigner, Arc&lt;ChainFilter&gt;, Arc&lt;TxBroadcaster&gt;, Arc&lt;FeeEstimator&gt;, Arc&lt;Logger&gt;, Arc&lt;DataPersister&gt;&gt;;
+<span class="kw">type </span>ChannelManager = Arc&lt;lightning::ln::channelmanager::SimpleArcChannelManager&lt;ChainMonitor, TxBroadcaster, FeeEstimator, Logger&gt;&gt;;
+<span class="kw">type </span>PeerManager = Arc&lt;lightning::ln::peer_handler::SimpleArcPeerManager&lt;lightning_net_tokio::SocketDescriptor, ChainMonitor, TxBroadcaster, FeeEstimator, ChainAccess, Logger&gt;&gt;;
+
+<span class="comment">// Connect to node with pubkey their_node_id at addr:
+</span><span class="kw">async fn </span>connect_to_node(peer_manager: PeerManager, chain_monitor: Arc&lt;ChainMonitor&gt;, channel_manager: ChannelManager, their_node_id: PublicKey, addr: SocketAddr) {
+	lightning_net_tokio::connect_outbound(peer_manager, their_node_id, addr).<span class="kw">await</span>;
+	<span class="kw">loop </span>{
+		<span class="kw">let </span>event_handler = |event: Event| {
+			<span class="comment">// Handle the event!
+		</span>};
+		channel_manager.await_persistable_update();
+		channel_manager.process_pending_events(<span class="kw-2">&amp;</span>event_handler);
+		chain_monitor.process_pending_events(<span class="kw-2">&amp;</span>event_handler);
+	}
+}
+
+<span class="comment">// Begin reading from a newly accepted socket and talk to the peer:
+</span><span class="kw">async fn </span>accept_socket(peer_manager: PeerManager, chain_monitor: Arc&lt;ChainMonitor&gt;, channel_manager: ChannelManager, socket: TcpStream) {
+	lightning_net_tokio::setup_inbound(peer_manager, socket);
+	<span class="kw">loop </span>{
+		<span class="kw">let </span>event_handler = |event: Event| {
+			<span class="comment">// Handle the event!
+		</span>};
+		channel_manager.await_persistable_update();
+		channel_manager.process_pending_events(<span class="kw-2">&amp;</span>event_handler);
+		chain_monitor.process_pending_events(<span class="kw-2">&amp;</span>event_handler);
+	}
+}</code></pre></div>
+</div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.SocketDescriptor.html" title="lightning_net_tokio::SocketDescriptor struct">SocketDescriptor</a></div><div class="item-right docblock-short">The SocketDescriptor used to refer to sockets by a PeerHandler. This is pub only as it is a
+type in the template of PeerHandler.</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.connect_outbound.html" title="lightning_net_tokio::connect_outbound fn">connect_outbound</a></div><div class="item-right docblock-short">Process incoming messages and feed outgoing messages on a new connection made to the given
+socket address which is expected to be accepted by a peer with the given public key (by
+scheduling futures with tokio::spawn).</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.setup_inbound.html" title="lightning_net_tokio::setup_inbound fn">setup_inbound</a></div><div class="item-right docblock-short">Process incoming messages and feed outgoing messages on the provided socket generated by
+accepting an incoming connection.</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.setup_outbound.html" title="lightning_net_tokio::setup_outbound fn">setup_outbound</a></div><div class="item-right docblock-short">Process incoming messages and feed outgoing messages on the provided socket generated by
+making an outbound connection which is expected to be accepted by a peer with the given
+public key. The relevant processing is set to run free (via tokio::spawn).</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="lightning_net_tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

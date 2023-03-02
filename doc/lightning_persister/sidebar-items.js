@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["FilesystemPersister","FilesystemPersister persists channel data on disk, where each channel’s data is stored in a file named after its funding outpoint."]]};

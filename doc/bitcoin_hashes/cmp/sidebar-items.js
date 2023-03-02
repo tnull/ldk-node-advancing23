@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":[["fixed_time_eq","Compare two slices for equality in fixed time. Panics if the slices are of non-equal length."]]};

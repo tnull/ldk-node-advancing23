@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":[["construct_invoice_preimage","Construct the invoice’s HRP and signatureless data into a preimage to be hashed."]]};

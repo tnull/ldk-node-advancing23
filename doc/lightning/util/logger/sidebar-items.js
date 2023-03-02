@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":[["Level","An enum representing the available verbosity levels of the logger."]],"struct":[["Record","A Record, unit of logging output with Metadata to enable filtering Module_path, file, line to inform on log’s source"]],"trait":[["Logger","A trait encapsulating the operations required of a logger"]]};
