@@ -4,9 +4,10 @@
 - Faucet: http://advancing23.tnull.de/
 - Bitcoind: advancing23.tnull.de:18444
 - Esplora: http://advancing23.tnull.de:3002
-- Lightning: 02b4825d7ca34b18728c687c97a76cf08d53cd9e5092cda163fdbb369158f17c72@3.8.195.83:9736
+- Lightning: 02b4825d7ca34b18728c687c97a76cf08d53cd9e5092cda163fdbb369158f17c72@13.40.88.238:9736
 
 ## Invoice Payment Challenge
+0. Install Rust, clone this repo
 1. Look through docs
 2. Setup `Config` (configure Esplora URL)
 3. Setup `Builder` from config, `build()` node
